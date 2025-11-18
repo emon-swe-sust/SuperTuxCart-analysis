@@ -109,6 +109,9 @@ iv. Total gameplay sessions:
 
 21 tracks × 4 difficulties × 2 runs = 168 total games
 
+-> player_log_round_1.csv contains the telemetry data for 1st run.
+-> player_log_round_2.csv contains the telemetry data for 2nd run.
+
 ---
 
 ### 4. Data Fields Logged
