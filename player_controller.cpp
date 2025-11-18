@@ -58,21 +58,13 @@ PlayerController::PlayerController(AbstractKart *kart)
 
     m_game_id = dis(gen);
 
-    // m_log_file.open("player_log.csv", std::ios::out);
-    // if (m_log_file.is_open())
-    // {
-    //     m_log_file << "game_id,time,track,kart_type,steer,accel,speed,brake,on_ground,x,y,z,energy\n";
-    // }
-
-    // Open file in append mode
     m_log_file.open("player_log.csv", std::ios::app);
     if (m_log_file.is_open())
     {
-        // Check if the file is empty
         m_log_file.seekp(0, std::ios::end);
         if (m_log_file.tellp() == 0)
         {
-             m_log_file << "game_id,time,track,difficulty,kart_type,steer,accel,speed,brake,on_ground,x,y,z,energy,rescue\n";
+             m_log_file << "game_id,time,track,difficulty,kart_type,steer,accel,speed,brake,on_ground,x,y,z,energy\n";
         }
     }
 
