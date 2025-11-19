@@ -1,3 +1,4 @@
 # remove .vscode and .DS_Store files
 .vscode/
-.DS_Store
+.DS_Store   
+.venv/
