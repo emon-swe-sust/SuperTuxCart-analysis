@@ -142,7 +142,9 @@ For each game session, three behavioral frustration signals were extracted:
 
 #### 5.1 Off-Ground Ratio (%)
 
-_offGroundRatio = $\frac{frames where on_ground = 0}{total frames}$ ×100_
+$$
+offGroundRatio = \frac{ \text{frames where on\_ground = 0} }{ \text{total frames} } \times 100
+$$
 
 A high value means the kart is frequently airborne or off-track events that disrupt flow and cause frustration.
 
@@ -164,6 +166,8 @@ Large speed loss typically corresponds to collisions, falling off-track, or hitt
 A sign flip indicates a switch from left to right steering (or vice versa).
 Frequent flips → sharp turns, overcorrections, or difficulty keeping the kart stable.
 
+---
+
 ### 6. Frustration Score Construction
 
 To create a single frustration metric per session, a weighted score was defined:
@@ -179,6 +183,8 @@ Rationale for weights:
 The final scores were saved:
 
 `result_df.to_csv('frustration_scores.csv', index=False)`
+
+---
 
 ### 7. Analysis
 
@@ -204,6 +210,8 @@ Findings:
 
 This proves that track design directly influences player frustration, independent of difficulty.
 
+---
+
 ### 8. Conclusion
 
 Through custom telemetry logging and analysis, I computed a frustration metric for each SuperTuxKart race session. By focusing on track-level analysis and frustration distribution, the results reveal clear differences in how track design affects player experience. Tracks with more jumps, sharp turns, or obstacles produce higher frustration, while smoother tracks show lower scores.
@@ -215,6 +223,8 @@ These findings can guide developers by identifying:
 - steering-related difficulty patterns
 
 Overall, this data-driven methodology provides valuable insights for improving track quality, fairness, and gameplay enjoyment.
+
+---
 
 ### 9. Limitations
 
