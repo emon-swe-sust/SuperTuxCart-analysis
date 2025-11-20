@@ -1,6 +1,6 @@
 # Gameplay Telemetry Collection for SuperTuxKart
 
-This project extends the SuperTuxKart (STK) codebase to collect fine-grained gameplay telemetry data for analyzing frustration/difficulties levels across different tracks and difficulty settings. The modifications allow automatic logging of player inputs, kart state, track metadata, and positional information during gameplay.
+The goal of this exercise is to extract gameplay telemetry from SuperTuxKart, compute data-driven frustration indicators, and analyze which tracks tend to produce higher frustration. The analysis uses only racing sessions played manually under different tracks and difficulty settings. This report describes how the gameplay telemetry was collected, how the frustration score was constructed, and the insights obtained from track-based analysis
 
 ---
 
@@ -16,7 +16,7 @@ The repository was cloned, configured using CMake, and built successfully. The r
 
 ### 2. Codebase Modifications for Data Logging
 
-Data logging functionality was added to src/karts/controller/player_controller.hpp and player_controller.cpp.
+Data logging functionality was added to `src/karts/controller/player_controller.hpp` and `src/karts/controller/player_controller.cpp`.
 
 #### 2.1 Added Members and Method (player_controller.hpp)
 
@@ -100,7 +100,7 @@ The logData() method extracts telemetry information such as steering input, acce
 
 ### 3. Gameplay Data Collection Procedure
 
-All tracks were unlocked manually by modifying the Windows AppData STK configuration files. A single user played all sessions to maintain consistency in play style. Telemetry for each session is stored in player_log.csv.
+All tracks were unlocked manually by modifying the Windows AppData STK configuration files. A single user played all sessions to maintain consistency in play style. Telemetry for each session is stored in a csv file. A unique `game_id` was assigned to every race session, ensuring that all frames from the same race could be grouped.
 
 i. Number of tracks: 21
 ii. Difficulty levels: Novice, Intermediate, Expert, SuperTux (4 total)
@@ -109,8 +109,9 @@ iv. Total gameplay sessions:
 
 21 tracks × 4 difficulties × 2 runs = 168 total games
 
--> player_log_round_1.csv contains the telemetry data for 1st run
--> player_log_round_2.csv contains the telemetry data for 2nd run.
+-> `player_log_round_1.csv` contains the telemetry data for 1st run
+
+-> `player_log_round_2.csv` contains the telemetry data for 2nd run.
 
 ---
 
@@ -135,8 +136,92 @@ energy: Kart energy level
 
 ---
 
-### 5. Limitations
+### 5. Computing Frustration Indicators
 
-i. Single-player bias: Only one player participated; gameplay skill may influence results.
-ii• Limited samples: Each track–difficulty combination was played only twice, which may not fully represent performance variability.
-iii• Controlled environment: Real-world variation (e.g., different player skills) is not captured.
+For each game session, three behavioral frustration signals were extracted:
+
+#### 5.1 Off-Ground Ratio (%)
+
+_offGroundRatio = $\frac{frames where on_ground = 0}{total frames}$ ×100_
+
+A high value means the kart is frequently airborne or off-track events that disrupt flow and cause frustration.
+
+#### 5.2 Sudden Speed Drops
+
+Using the frame-to-frame differences:
+
+```
+drops = np.diff(speed)
+speed_drop_count = np.sum(drops < -5)
+```
+
+Large speed loss typically corresponds to collisions, falling off-track, or hitting obstacles.
+
+#### 5.3 Steering Instability
+
+`steer_changes = np.sum(np.diff(np.sign(steer)) != 0)`
+
+A sign flip indicates a switch from left to right steering (or vice versa).
+Frequent flips → sharp turns, overcorrections, or difficulty keeping the kart stable.
+
+### 6. Frustration Score Construction
+
+To create a single frustration metric per session, a weighted score was defined:
+
+`FrustrationScore = 0.4 X OffGroundRatio + 0.4 X SpeedDropCount + 0.2 X SteerChanges`
+
+Rationale for weights:
+
+- 0.4 for off-ground events: breaking flow and control is highly frustrating
+- 0.4 for sudden speed loss: often punishes players severely
+- 0.2 for steering instability: contributes to difficulty but less severe
+
+The final scores were saved:
+
+`result_df.to_csv('frustration_scores.csv', index=False)`
+
+### 7. Analysis
+
+#### 7.1 Distribution of Frustration Scores
+
+![Distribution of Frustration Score](/plots/distribution_of_frustration_scores.png "Distribution of Frustration Score")
+
+Observations:
+
+- Most races fall within moderate frustration, but a small number of sessions show very high scores.
+- These high-frustration cases often correspond to tracks with obstacles, jumps, or tight turns.
+
+This suggests the frustration metric successfully captures variability across tracks.
+
+#### 5.2 Average Frustration by Track
+
+![Average Frustration by Track](/plots/average_frustration_by_tracks.png "Average Frustration by Track")
+
+Findings:
+
+- Tracks like volcano_island, black_forest, and xr591 repeatedly produced high frustration, due to complex geometry and elevation changes.
+- Tracks such as lighthouse or minigolf showed consistently low scores, indicating smoother layouts.
+
+This proves that track design directly influences player frustration, independent of difficulty.
+
+### 8. Conclusion
+
+Through custom telemetry logging and analysis, I computed a frustration metric for each SuperTuxKart race session. By focusing on track-level analysis and frustration distribution, the results reveal clear differences in how track design affects player experience. Tracks with more jumps, sharp turns, or obstacles produce higher frustration, while smoother tracks show lower scores.
+
+These findings can guide developers by identifying:
+
+- tracks that require redesign or balancing
+- track sections causing excessive airborne time or speed loss
+- steering-related difficulty patterns
+
+Overall, this data-driven methodology provides valuable insights for improving track quality, fairness, and gameplay enjoyment.
+
+### 9. Limitations
+
+- Single-player bias: Only one player participated; gameplay skill may influence results.
+- Limited samples: Each track–difficulty combination was played only twice, which may not fully represent performance variability.
+- Controlled environment: Real-world variation (e.g., different player skills) is not captured.
+
+```
+
+```
