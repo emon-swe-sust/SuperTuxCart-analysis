@@ -143,7 +143,7 @@ For each game session, three behavioral frustration signals were extracted:
 #### 5.1 Off-Ground Ratio (%)
 
 $$
-offGroundRatio = \frac{ \text{frames where on\_ground = 0} }{ \text{total frames} } \times 100
+offGroundRatio = \frac{\text{frames where on\_ground = 0}}{\text{total frames}} \times 100
 $$
 
 A high value means the kart is frequently airborne or off-track events that disrupt flow and cause frustration.
