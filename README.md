@@ -102,12 +102,10 @@ The logData() method extracts telemetry information such as steering input, acce
 
 All tracks were unlocked manually by modifying the Windows AppData STK configuration files. A single user played all sessions to maintain consistency in play style. Telemetry for each session is stored in a csv file. A unique `game_id` was assigned to every race session, ensuring that all frames from the same race could be grouped.
 
-i. Number of tracks: 21
-ii. Difficulty levels: Novice, Intermediate, Expert, SuperTux (4 total)
-iii. Attempts per track per difficulty: 2
-iv. Total gameplay sessions:
-
-21 tracks × 4 difficulties × 2 runs = 168 total games
+- Number of tracks: 21
+- Difficulty levels: Novice, Intermediate, Expert, SuperTux (4 total)
+- Attempts per track per difficulty: 2
+- Total gameplay sessions: 21 tracks × 4 difficulties × 2 runs = 168 total games
 
 -> `player_log_round_1.csv` contains the telemetry data for 1st run
 
@@ -142,7 +140,7 @@ For each game session, three behavioral frustration signals were extracted:
 
 #### 5.1 Off-Ground Ratio (%)
 
-offGroundRatio = $\frac{frames\ where\ on\_ground = 0}{total\ frames} \times 100$
+offGroundRatio = $\frac{frames\ where\ on\\\_ground = 0}{total\ frames} \times 100$
 
 A high value means the kart is frequently airborne or off-track events that disrupt flow and cause frustration.
 
@@ -220,11 +218,13 @@ These findings can guide developers by identifying:
 - track sections causing excessive airborne time or speed loss
 - steering-related difficulty patterns
 
-Overall, this data-driven methodology provides valuable insights for improving track quality, fairness, and gameplay enjoyment.
+A larger dataset collected from many players and many repeated runs would help identify the exact areas of each track that cause high off-ground ratios, sudden speed drops, or unstable steering. With more data, developers could pinpoint which jumps make players fall too often, which corners cause frequent crashes, and which sections lead to over-corrections in steering. These areas could then be improved by smoothing ramps, widening tight turns, adjusting obstacle placement, or adding clearer visual guidance.
+
+At the same time, it is important to balance difficulty. Some challenging sections are fun and make the game exciting. The goal should not be to remove all difficulty, but to ensure that tough areas feel fair rather than frustrating. A richer dataset would help developers to create the right balance between challenge and enjoyment.
 
 ---
 
-### 9. Limitations
+### 9. Limitations of the Analysis
 
 - Single-player bias: Only one player participated; gameplay skill may influence results.
 - Limited samples: Each track–difficulty combination was played only twice, which may not fully represent performance variability.
